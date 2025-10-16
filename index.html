@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@assel_offroad_fishing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #667eea;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            display: block;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .instagram-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .instagram-link:hover {
+            transform: scale(1.05);
+        }
+
+        .music-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 15px;
+        }
+
+        .music-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .lyrics {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            line-height: 1.8;
+            color: #444;
+            white-space: pre-line;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .lyrics h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .about {
+            margin-top: 30px;
+            text-align: center;
+            color: #555;
+        }
+
+        .fishing-emoji {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .download-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-section {
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="fishing-emoji">🎣 🚙 🎵</div>
+            <img src="photo_2025-10-16 22.27.04.jpeg" alt="@assel_offroad_fishing" class="profile-photo">
+            <h1>@assel_offroad_fishing</h1>
+            <p>Offroad & Fishing</p>
+            <a href="http://instagram.com/assel_offroad_fishing/" target="_blank" class="instagram-link">
+                📸 Мой Instagram
+            </a>
+        </div>
+
+        <div class="about">
+            <p>Добро пожаловать на мою страницу!</p>
+            <p>Здесь я делюсь своей страстью к рыбалке и приключениям на природе.</p>
+        </div>
+
+        <div class="music-section">
+            <h2>🎵 Моя песня</h2>
+            <audio controls>
+                <source src="Хочу на рыбалку.mp3" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио элемент.
+            </audio>
+
+            <div class="download-section">
+                <a href="Хочу на рыбалку.mp3" download class="download-btn" style="display: inline-block;">
+                    ⬇️ Скачать MP3
+                </a>
+            </div>
+
+            <div class="lyrics">
+                <h3>Хочу на рыбалку</h3>
+
+Эх, сейчас бы на рыбалочку
+Удочка, вода и я
+Ветер шепчет, как по-старому
+На лацере реки и жизнь своя
+
+Хочу на рыбалку, отпустите меня
+Вода зовёт, а город тюрьма
+Хочу на рыбалку, вот бы сбежать
+На волю, где тишина
+
+Душные стены, бетонный холод
+Светофоры, шум машин
+А там в камышах трещит кто-то
+И рыба в воде творит свой мир
+
+Хочу на рыбалку, отпустите меня
+Вода зовёт, а город тюрьма
+Хочу на рыбалку, вот бы сбежать
+На волю, где тишина
+
+Не надо много, лишь речной берег
+Костёр и звёзды в ночной дали
+Там, где дышит лес и вольно сердце там
+Где я снова живым был
+
+Хочу на рыбалку, отпустите меня
+Вода зовёт, а город тюрьма
+Хочу на рыбалку, вот бы сбежать
+На волю, где тишина
+
+Хочу на рыбалку
+Хочу на рыбалку
+Где тишина
+            </div>
+        </div>
+    </div>
+</body>
+</html>
