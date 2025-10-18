@@ -48,7 +48,7 @@
 
         .header h1 {
             color: #333;
-            font-size: 2.5em;
+            font-size: 1.5em;
             margin-bottom: 10px;
         }
 
@@ -143,6 +143,54 @@
             text-align: center;
             margin: 15px 0;
         }
+
+        .streaming-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .streaming-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+            text-align: center;
+        }
+
+        .spotify-btn {
+            background: #1DB954;
+        }
+
+        .spotify-btn:hover {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.3);
+        }
+
+        .youtube-btn {
+            background: #FF0000;
+        }
+
+        .youtube-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .instagram-music-btn {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .instagram-music-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(188, 24, 136, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -151,7 +199,6 @@
             <div class="fishing-emoji">🎣 🚙 🎵</div>
             <img src="photo_2025-10-16 22.27.04.jpeg" alt="@assel_offroad_fishing" class="profile-photo">
             <h1>@assel_offroad_fishing</h1>
-            <p>Offroad & Fishing</p>
             <a href="http://instagram.com/assel_offroad_fishing/" target="_blank" class="instagram-link">
                 📸 Мой Instagram
             </a>
@@ -164,10 +211,24 @@
 
         <div class="music-section">
             <h2>🎵 Моя песня</h2>
+            <h2>Хочу на рыбалку</h2>
+
             <audio controls>
                 <source src="Хочу на рыбалку.mp3" type="audio/mpeg">
                 Ваш браузер не поддерживает аудио элемент.
             </audio>
+
+            <div class="streaming-links">
+                <a href="https://spotify.link/zbFYmoZGyXb" target="_blank" class="streaming-btn spotify-btn">
+                    🎵 Слушать на Spotify
+                </a>
+                <a href="https://youtu.be/HzkudEGTVlU?si=2JhZAC5eO78wMHk7" target="_blank" class="streaming-btn youtube-btn">
+                    ▶️ Слушать на YouTube Music
+                </a>
+                <a href="https://www.instagram.com/reels/audio/829360059542332/" target="_blank" class="streaming-btn instagram-music-btn">
+                    📸 Слушать в Instagram
+                </a>
+            </div>
 
             <div class="download-section">
                 <a href="Хочу на рыбалку.mp3" download class="download-btn" style="display: inline-block;">
@@ -176,7 +237,7 @@
             </div>
 
             <div class="lyrics">
-                <h3>Хочу на рыбалку</h3>
+                <h3>Хочу на рыбалку,</h3>
 
 Эх, сейчас бы на рыбалочку
 Удочка, вода и я
