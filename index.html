@@ -226,6 +226,34 @@
             font-size: 1em;
         }
 
+        .instagram-browser-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .instagram-browser-warning.show {
+            display: block;
+        }
+
+        .open-in-browser-btn {
+            background: white;
+            color: #ff6b6b;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
         @media (max-width: 600px) {
             .platforms-grid {
                 grid-template-columns: 1fr;
@@ -247,6 +275,11 @@
     </style>
 </head>
 <body>
+    <div class="instagram-browser-warning" id="instaWarning">
+        <div>⚠️ Для лучшего опыта откройте в браузере</div>
+        <button class="open-in-browser-btn" onclick="openInBrowser()">Открыть в Safari/Chrome</button>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="fishing-emoji">🎣 🚙 🎵</div>
@@ -405,6 +438,36 @@
     </div>
 
     <script>
+        // Проверяем, открыта ли страница в Instagram браузере
+        function isInstagramBrowser() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            return (ua.indexOf('Instagram') > -1);
+        }
+
+        function openInBrowser() {
+            const url = window.location.href;
+            // Пытаемся открыть в внешнем браузере
+            window.location.href = url.replace('https://', 'googlechrome://').replace('http://', 'googlechrome://');
+            // Запасной вариант для Safari
+            setTimeout(() => {
+                if (confirm('Не получилось открыть? Скопируйте ссылку и вставьте в Safari или Chrome')) {
+                    // Копируем ссылку
+                    const textArea = document.createElement('textarea');
+                    textArea.value = url;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Ссылка скопирована! Вставьте её в Safari или Chrome');
+                }
+            }, 1500);
+        }
+
+        // Показываем предупреждение если открыто в Instagram
+        if (isInstagramBrowser()) {
+            document.getElementById('instaWarning').classList.add('show');
+        }
+
         function toggleLyrics(lyricsId, button) {
             const lyrics = document.getElementById(lyricsId);
             if (lyrics.classList.contains('hidden')) {
