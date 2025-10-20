@@ -1,0 +1,11 @@
+# Принудительное скачивание MP3 файлов
+<Files "*.mp3">
+    Header set Content-Disposition "attachment"
+    Header set Content-Type "application/octet-stream"
+</Files>
+
+# Кеширование
+<FilesMatch "\.(mp3|jpg|jpeg|png|gif|css|js)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+</FilesMatch>
