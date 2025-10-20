@@ -258,9 +258,9 @@
             </audio>
 
             <div class="download-section">
-                <a href="Хочу на рыбалку.mp3" download class="download-btn" style="display: inline-block;">
+                <button class="download-btn" onclick="downloadFile('Хочу на рыбалку.mp3', 'Хочу на рыбалку.mp3')" style="display: inline-block;">
                     ⬇️ Скачать MP3
-                </a>
+                </button>
             </div>
 
             <div class="download-section">
@@ -316,9 +316,9 @@
             </audio>
 
             <div class="download-section">
-                <a href="Fishing girl.mp3" download class="download-btn" style="display: inline-block;">
+                <button class="download-btn" onclick="downloadFile('Fishing girl.mp3', 'Fishing girl.mp3')" style="display: inline-block;">
                     ⬇️ Скачать MP3
-                </a>
+                </button>
             </div>
 
             <div class="download-section">
@@ -401,6 +401,29 @@
                 lyrics.classList.add('hidden');
                 button.textContent = '📜 Показать текст';
             }
+        }
+
+        function downloadFile(url, filename) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(blobUrl);
+                })
+                .catch(err => {
+                    console.error('Ошибка скачивания:', err);
+                    // Запасной вариант - обычная ссылка
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                });
         }
     </script>
 </body>
