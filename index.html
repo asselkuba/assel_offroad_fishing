@@ -143,6 +143,94 @@
             text-align: center;
             margin: 15px 0;
         }
+
+        .toggle-lyrics-btn {
+            display: inline-block;
+            background: transparent;
+            color: #667eea;
+            padding: 10px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .toggle-lyrics-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .lyrics.hidden {
+            display: none;
+        }
+
+        .music-platforms {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .music-platforms h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .platform-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .platform-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .platform-icon img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .platform-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+
+        @media (max-width: 600px) {
+            .platforms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -151,7 +239,6 @@
             <div class="fishing-emoji">🎣 🚙 🎵</div>
             <img src="photo_2025-10-16 22.27.04.jpeg" alt="@assel_offroad_fishing" class="profile-photo">
             <h1>@assel_offroad_fishing</h1>
-            <p>Offroad & Fishing</p>
             <a href="http://instagram.com/assel_offroad_fishing/" target="_blank" class="instagram-link">
                 📸 Мой Instagram
             </a>
@@ -160,10 +247,11 @@
         <div class="about">
             <p>Добро пожаловать на мою страницу!</p>
             <p>Здесь я делюсь своей страстью к рыбалке и приключениям на природе.</p>
+            <p>Создаю музыку и песни с помощью ИИ-инструментов — где технологии встречаются с творчеством! 🎵🤖</p>
         </div>
 
         <div class="music-section">
-            <h2>🎵 Моя песня</h2>
+            <h2>🎵 Хочу на рыбалку</h2>
             <audio controls>
                 <source src="Хочу на рыбалку.mp3" type="audio/mpeg">
                 Ваш браузер не поддерживает аудио элемент.
@@ -175,7 +263,13 @@
                 </a>
             </div>
 
-            <div class="lyrics">
+            <div class="download-section">
+                <button class="toggle-lyrics-btn" onclick="toggleLyrics('lyrics1', this)">
+                    📜 Показать текст
+                </button>
+            </div>
+
+            <div class="lyrics hidden" id="lyrics1">
                 <h3>Хочу на рыбалку</h3>
 
 Эх, сейчас бы на рыбалочку
@@ -213,6 +307,101 @@
 Где тишина
             </div>
         </div>
+
+        <div class="music-section">
+            <h2>🎵 Fishing Girl</h2>
+            <audio controls>
+                <source src="Fishing girl.mp3" type="audio/mpeg">
+                Ваш браузер не поддерживает аудио элемент.
+            </audio>
+
+            <div class="download-section">
+                <a href="Fishing girl.mp3" download class="download-btn" style="display: inline-block;">
+                    ⬇️ Скачать MP3
+                </a>
+            </div>
+
+            <div class="download-section">
+                <button class="toggle-lyrics-btn" onclick="toggleLyrics('lyrics2', this)">
+                    📜 Показать текст
+                </button>
+            </div>
+
+            <div class="lyrics hidden" id="lyrics2">
+                <h3>Fishing Girl</h3>
+
+Асель of Road Fishing, я звезда инсты,
+Удочка блестит, словно меч, как у мечты.
+Лучшие снасти — мой арсенал,
+Экипировка топ, мой стиль феноменал.
+В воде, на берегу — рыбу найду,
+В глуши или в центре, я всегда в ходу.
+Контент огонь, лайки сыпятся градом,
+Мой путь — на вершину, за новым трофеем рядом.
+
+Я охотница за трофеями, впереди мой приз,
+Не жалейте лайков, жмите этот "click".
+Асель в деле, рыбачка номер один,
+Моя страсть к рыбалке — это мой адреналин.
+
+Катушка крутится, леска поет,
+Каждый заброс — как новый полет.
+Ветер шепчет, вода мне говорит,
+Где прячется трофей, мой рыбий магнит.
+Секреты водоемов — у меня в руке,
+Я читаю природу, как книгу в строке.
+Никогда не унываю, если клев не тот,
+Я найду свой улов, я знаю, где он ждет.
+
+Я охотница за трофеями, впереди мой приз,
+Не жалейте лайков, жмите этот "click".
+Асель в деле, рыбачка номер один,
+Моя страсть к рыбалке — это мой адреналин.
+            </div>
+        </div>
+
+        <div class="music-platforms">
+            <h3>🎧 Слушайте на платформах</h3>
+            <div class="platforms-grid">
+                <a href="https://www.shazam.com/track/844248586?referrer=share" class="platform-link" target="_blank">
+                    <div class="platform-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c0/Shazam_icon.svg" alt="Shazam">
+                    </div>
+                    <div class="platform-name">Shazam</div>
+                </a>
+                <a href="https://music.apple.com" class="platform-link" target="_blank">
+                    <div class="platform-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Apple_Music_logo.svg" alt="Apple Music">
+                    </div>
+                    <div class="platform-name">Apple Music</div>
+                </a>
+                <a href="https://open.spotify.com/track/3inarPbfqaGVBx67AS4rcf?si=CbOHdj4FSSO2PJXAI1E1bA" class="platform-link" target="_blank">
+                    <div class="platform-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify">
+                    </div>
+                    <div class="platform-name">Spotify</div>
+                </a>
+                <a href="#" class="platform-link" onclick="alert('Скоро на Яндекс.Музыке! 🎵'); return false;">
+                    <div class="platform-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Yandex_Music_icon.svg" alt="Яндекс.Музыка">
+                    </div>
+                    <div class="platform-name">Яндекс.Музыка</div>
+                </a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function toggleLyrics(lyricsId, button) {
+            const lyrics = document.getElementById(lyricsId);
+            if (lyrics.classList.contains('hidden')) {
+                lyrics.classList.remove('hidden');
+                button.textContent = '🔼 Скрыть текст';
+            } else {
+                lyrics.classList.add('hidden');
+                button.textContent = '📜 Показать текст';
+            }
+        }
+    </script>
 </body>
 </html>
