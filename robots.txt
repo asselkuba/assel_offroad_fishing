@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://assel.blog/sitemap.xml
+
+# Важные страницы
+Allow: /index.html
+Allow: /*.mp3
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+
+# Запрещаем индексацию служебных файлов
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /.DS_Store
