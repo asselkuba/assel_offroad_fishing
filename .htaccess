@@ -1,11 +1,53 @@
-# Принудительное скачивание MP3 файлов
-<Files "*.mp3">
-    Header set Content-Disposition "attachment"
-    Header set Content-Type "application/octet-stream"
-</Files>
-
-# Кеширование
-<FilesMatch "\.(mp3|jpg|jpeg|png|gif|css|js)$">
-    ExpiresActive On
-    ExpiresDefault "access plus 1 month"
+# Аудио файлы - разрешить воспроизведение в браузере
+<FilesMatch "\.(mp3)$">
+    Header set Content-Type "audio/mpeg"
+    Header unset Content-Disposition
 </FilesMatch>
+
+# Кеширование медиафайлов
+<FilesMatch "\.(mp3|jpg|jpeg|png|gif|webp|heic)$">
+    Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>
+
+# Кеширование HTML и статических файлов
+<FilesMatch "\.(html|css|js)$">
+    Header set Cache-Control "max-age=3600, public"
+</FilesMatch>
+
+# Сжатие файлов
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Безопасность - защита от XSS
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Отключить отображение содержимого директорий
+Options -Indexes
+
+# Кодировка по умолчанию
+AddDefaultCharset UTF-8
+
+# MIME типы
+AddType audio/mpeg .mp3
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+AddType image/heic .heic
+
+# Перенаправление с www на без www (если нужно)
+# RewriteEngine On
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Включить CORS для аудио файлов (если нужно для внешних сайтов)
+<FilesMatch "\.(mp3)$">
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
+# Обработка ошибок
+ErrorDocument 404 /index.html
