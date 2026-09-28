@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#181321">
+  <meta name="description" content="Личная книжная рулетка на 100 книг с прогрессом чтения.">
+  <title>Мои 100 книг — книжная рулетка</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23181321'/%3E%3Cpath d='M14 16c8-3 14-1 18 4 4-5 10-7 18-4v34c-8-3-14-1-18 4-4-5-10-7-18-4z' fill='%23f6c851'/%3E%3Cpath d='M32 20v34' stroke='%23181321' stroke-width='3'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f9f6ee;
+      --muted: #aaa2b3;
+      --bg: #100d16;
+      --panel: #1a1522;
+      --panel-2: #211a2c;
+      --line: rgba(255,255,255,.11);
+      --yellow: #f6c851;
+      --coral: #ff6f69;
+      --mint: #7ee2b8;
+      --violet: #a78bfa;
+      --shadow: 0 24px 70px rgba(0,0,0,.34);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% -10%, rgba(167,139,250,.15), transparent 34rem),
+        radial-gradient(circle at 90% 20%, rgba(246,200,81,.08), transparent 30rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 70px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:24px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:850; letter-spacing:-.03em; font-size:1.1rem; }
+    .brand-mark { display:grid; place-items:center; width:42px; height:42px; border-radius:12px; background:var(--yellow); color:#19131f; box-shadow:0 8px 22px rgba(246,200,81,.18); }
+    .brand-mark svg { width:24px; height:24px; }
+    .count-pill { border:1px solid var(--line); color:var(--muted); padding:8px 12px; border-radius:999px; font-size:.9rem; white-space:nowrap; }
+    .count-pill strong { color:var(--ink); }
+    .main-grid { display:grid; grid-template-columns:minmax(0,1.28fr) minmax(310px,.72fr); gap:18px; }
+    .card { background:linear-gradient(145deg, rgba(34,27,45,.98), rgba(24,19,33,.98)); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow); }
+    .roulette-card { padding:clamp(22px,4vw,46px); position:relative; overflow:hidden; min-height:590px; }
+    .roulette-card::after { content:""; position:absolute; width:220px; height:220px; border:1px solid rgba(255,255,255,.06); border-radius:50%; right:-80px; top:-80px; }
+    .eyebrow { margin:0 0 8px; color:var(--yellow); font-size:.78rem; font-weight:850; text-transform:uppercase; letter-spacing:.14em; }
+    h1 { margin:0; max-width:720px; font-size:clamp(2rem,5vw,4.2rem); line-height:.98; letter-spacing:-.065em; }
+    .intro { margin:18px 0 0; color:var(--muted); max-width:620px; }
+    .play-area { display:grid; grid-template-columns:minmax(220px,300px) 1fr; align-items:center; gap:clamp(24px,4vw,52px); margin-top:34px; }
+    .wheel-wrap { position:relative; width:min(100%,300px); aspect-ratio:1; margin-inline:auto; filter:drop-shadow(0 24px 26px rgba(0,0,0,.33)); }
+    .pointer { position:absolute; z-index:4; top:-3px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:14px solid transparent; border-right:14px solid transparent; border-top:30px solid var(--ink); filter:drop-shadow(0 4px 5px rgba(0,0,0,.35)); }
+    .wheel {
+      width:100%; height:100%; border-radius:50%;
+      border:10px solid #2a2236;
+      background:repeating-conic-gradient(from -1.8deg, var(--yellow) 0 1.8deg, var(--coral) 1.8deg 3.6deg);
+      box-shadow:inset 0 0 0 3px rgba(255,255,255,.18), inset 0 0 0 34px rgba(16,13,22,.13);
+      transition:transform 2.1s cubic-bezier(.13,.72,.05,1);
+      display:grid; place-items:center;
+    }
+    .wheel::before { content:""; position:absolute; width:52%; height:52%; border-radius:50%; background:var(--panel); border:2px solid rgba(255,255,255,.14); }
+    .wheel-center { position:relative; z-index:2; display:grid; place-items:center; width:96px; height:96px; border-radius:50%; background:#17121f; border:1px solid var(--line); text-align:center; font-weight:900; font-size:2rem; line-height:.85; }
+    .wheel-center small { display:block; margin-top:5px; color:var(--muted); font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .result { min-width:0; }
+    .result-label { color:var(--muted); font-size:.85rem; font-weight:750; letter-spacing:.08em; text-transform:uppercase; }
+    .result-number { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; margin-top:14px; border-radius:12px; color:#19131f; background:var(--yellow); font-weight:900; }
+    .result h2 { margin:14px 0 8px; font-family:Georgia, "Times New Roman", serif; font-size:clamp(1.7rem,3.4vw,2.8rem); line-height:1.03; letter-spacing:-.035em; }
+    .result-author { margin:0 0 22px; color:var(--muted); font-size:1rem; }
+    .spin-btn { border:0; border-radius:16px; padding:15px 20px; background:var(--yellow); color:#17121f; font-weight:900; cursor:pointer; box-shadow:0 12px 30px rgba(246,200,81,.2); transition:transform .18s ease, box-shadow .18s ease; }
+    .spin-btn:hover { transform:translateY(-2px); box-shadow:0 16px 34px rgba(246,200,81,.27); }
+    .spin-btn:focus-visible, .filter-btn:focus-visible, .search:focus-within, .book-check:focus-visible { outline:3px solid var(--violet); outline-offset:3px; }
+    .spin-btn:disabled { opacity:.6; cursor:wait; transform:none; }
+    .side { display:grid; gap:18px; align-content:start; }
+    .progress-card { padding:26px; }
+    .progress-head { display:flex; justify-content:space-between; align-items:end; gap:20px; }
+    .progress-head h2 { margin:0; font-size:1.15rem; }
+    .progress-big { font-size:2.25rem; font-weight:900; letter-spacing:-.06em; }
+    .progress-big span { color:var(--muted); font-size:1rem; font-weight:700; letter-spacing:0; }
+    .progress-track { height:12px; margin:18px 0 12px; overflow:hidden; border-radius:999px; background:#0f0c14; border:1px solid var(--line); }
+    .progress-fill { width:1%; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--mint),var(--yellow)); transition:width .4s ease; }
+    .progress-copy { display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.88rem; }
+    .next-card { padding:26px; border-color:rgba(126,226,184,.24); }
+    .next-card .mini { color:var(--mint); font-size:.78rem; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
+    .next-card h3 { margin:12px 0 6px; font-family:Georgia, "Times New Roman", serif; font-size:1.55rem; line-height:1.12; }
+    .next-card p { color:var(--muted); margin:0; }
+    .library { margin-top:18px; padding:26px; }
+    .library-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:20px; }
+    .library-head h2 { margin:0 0 6px; font-size:1.5rem; letter-spacing:-.035em; }
+    .library-head p { margin:0; color:var(--muted); }
+    .tools { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .search { display:flex; align-items:center; gap:8px; min-width:240px; padding:10px 12px; border:1px solid var(--line); border-radius:13px; background:#110e17; }
+    .search svg { width:18px; flex:none; color:var(--muted); }
+    .search input { width:100%; min-width:0; border:0; outline:0; color:var(--ink); background:transparent; }
+    .search input::placeholder { color:#787181; }
+    .filters { display:flex; gap:6px; padding:4px; background:#110e17; border:1px solid var(--line); border-radius:13px; }
+    .filter-btn { border:0; background:transparent; color:var(--muted); padding:7px 10px; border-radius:9px; cursor:pointer; font-size:.88rem; }
+    .filter-btn[aria-pressed="true"] { color:#17121f; background:var(--ink); font-weight:800; }
+    .book-list { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .book-item { display:grid; grid-template-columns:42px 1fr 34px; align-items:center; gap:12px; min-height:78px; padding:12px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.025); transition:border-color .2s ease, background .2s ease, opacity .2s ease; }
+    .book-item:hover { border-color:rgba(255,255,255,.22); background:rgba(255,255,255,.045); }
+    .book-item.is-read { opacity:.62; background:rgba(126,226,184,.045); }
+    .book-item.is-current { border-color:rgba(246,200,81,.58); box-shadow:inset 3px 0 0 var(--yellow); }
+    .book-no { display:grid; place-items:center; width:42px; height:42px; border-radius:12px; color:var(--muted); background:#110e17; font-weight:850; font-size:.88rem; }
+    .book-name { min-width:0; }
+    .book-name strong { display:block; font-family:Georgia, "Times New Roman", serif; font-size:1.03rem; line-height:1.18; }
+    .book-name span { display:block; margin-top:4px; color:var(--muted); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .book-check { appearance:none; width:26px; height:26px; margin:0; border:2px solid #81798b; border-radius:8px; cursor:pointer; display:grid; place-items:center; }
+    .book-check::after { content:""; width:12px; height:7px; border-left:3px solid #17121f; border-bottom:3px solid #17121f; transform:rotate(-45deg) scale(0); transition:transform .13s ease; }
+    .book-check:checked { background:var(--mint); border-color:var(--mint); }
+    .book-check:checked::after { transform:rotate(-45deg) scale(1); }
+    .empty { grid-column:1/-1; padding:46px 20px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:16px; }
+    .footer-note { margin-top:18px; color:#777080; text-align:center; font-size:.82rem; }
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns:1fr; }
+      .roulette-card { min-height:0; }
+      .side { grid-template-columns:1fr 1fr; }
+      .library-head { align-items:flex-start; flex-direction:column; }
+      .tools { width:100%; justify-content:flex-start; }
+      .search { flex:1; }
+    }
+    @media (max-width: 650px) {
+      .shell { width:min(100% - 20px,1180px); padding-top:16px; }
+      .topbar { margin-bottom:12px; }
+      .roulette-card { padding:22px 18px 26px; border-radius:20px; }
+      .play-area { grid-template-columns:1fr; }
+      .wheel-wrap { width:230px; }
+      .result { text-align:center; }
+      .result-number { margin-inline:auto; }
+      .side { grid-template-columns:1fr; }
+      .library { padding:18px 12px; border-radius:20px; }
+      .tools, .search { width:100%; }
+      .filters { width:100%; }
+      .filter-btn { flex:1; }
+      .book-list { grid-template-columns:1fr; }
+      .count-pill { display:none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 5.5c3.7-1.4 6.7-.8 9 1.8 2.3-2.6 5.3-3.2 9-1.8v13c-3.7-1.4-6.7-.8-9 1.8-2.3-2.6-5.3-3.2-9-1.8z" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.3v13" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        Мои 100 книг
+      </div>
+      <div class="count-pill"><strong id="topRead">0</strong> прочитано · <span id="topLeft">100</span> впереди</div>
+    </header>
+
+    <section class="main-grid" aria-label="Книжная рулетка и прогресс">
+      <article class="card roulette-card">
+        <p class="eyebrow">Что читать дальше?</p>
+        <h1>Пусть решит книжная рулетка.</h1>
+        <p class="intro">В колесе участвуют только непрочитанные книги. Каждый новый выбор — честный случайный результат.</p>
+        <div class="play-area">
+          <div class="wheel-wrap" aria-hidden="true">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"><div class="wheel-center">100<small>книг</small></div></div>
+          </div>
+          <div class="result" aria-live="polite">
+            <div class="result-label" id="resultLabel">Рулетка готова</div>
+            <div class="result-number" id="resultNumber">?</div>
+            <h2 id="resultTitle">Крутите колесо</h2>
+            <p class="result-author" id="resultAuthor">Следующая книга появится здесь</p>
+            <button class="spin-btn" id="spinButton" type="button">Крутить рулетку</button>
+          </div>
+        </div>
+      </article>
+
+      <aside class="side">
+        <section class="card progress-card">
+          <div class="progress-head"><h2>Прогресс</h2><div class="progress-big"><b id="readCount">0</b><span> / 100</span></div></div>
+          <div class="progress-track" role="progressbar" aria-label="Прогресс чтения" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-copy"><span id="percentText">0% пути</span><span id="leftText">100 книг осталось</span></div>
+        </section>
+        <section class="card next-card">
+          <div class="mini">Следующая книга</div>
+          <h3 id="nextTitle">Пока не выбрана</h3>
+          <p id="nextAuthor">Крутите рулетку</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="card library">
+      <div class="library-head">
+        <div><h2>Весь список</h2><p>Ставьте галочку, когда закончите книгу.</p></div>
+        <div class="tools">
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input id="searchInput" type="search" placeholder="Найти книгу или автора" aria-label="Найти книгу или автора">
+          </label>
+          <div class="filters" aria-label="Фильтр списка">
+            <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">Все</button>
+            <button class="filter-btn" type="button" data-filter="unread" aria-pressed="false">Не прочитаны</button>
+            <button class="filter-btn" type="button" data-filter="read" aria-pressed="false">Прочитаны</button>
+          </div>
+        </div>
+      </div>
+      <ol class="book-list" id="bookList"></ol>
+    </section>
+    <p class="footer-note">У каждого посетителя свой прогресс — он хранится только в его браузере.</p>
+  </main>
+
+  <script>
+    const books = [
+      [1,"Сара Дж. Маас","Двор тумана и ярости"],
+      [2,"Кристин Ханна","Соловей"],
+      [3,"Кристин Ханна","Женщины"],
+      [4,"Эдит Эгер","Выбор"],
+      [5,"Ребекка Яррос","Четвёртое крыло"],
+      [6,"Энди Вейер","Проект «Аве Мария»"],
+      [7,"Тревор Ноа","Рождённый преступником"],
+      [8,"Тара Вестовер","Ученица"],
+      [9,"Барбара Кингсолвер","Демон Копперхед"],
+      [10,"Фил Найт","Продавец обуви"],
+      [11,"Мишель Обама","Становление"],
+      [12,"Дженнетт Маккарди","Я рада, что моя мама умерла"],
+      [13,"Энди Вейер","Марсианин"],
+      [14,"Тейлор Дженкинс Рид","Семь мужей Эвелин Хьюго"],
+      [15,"Маркус Зусак","Книжный вор"],
+      [16,"Делия Оуэнс","Там, где раки поют"],
+      [17,"Ребекка Яррос","Железное пламя"],
+      [18,"Фрэнк Герберт","Дюна"],
+      [19,"Колин Гувер","Напоминания о нём"],
+      [20,"Юваль Ной Харари","Sapiens. Краткая история человечества"],
+      [21,"Мадлен Миллер","Песнь Ахилла"],
+      [22,"Амор Тоулз","Джентльмен в Москве"],
+      [23,"Джеймс Клир","Атомные привычки"],
+      [24,"Уолтер Айзексон","Илон Маск"],
+      [25,"Ребекка Яррос","Ониксовый шторм"],
+      [26,"Морган Хаузел","Психология денег"],
+      [27,"Гэри Чепмен","Пять языков любви"],
+      [28,"Фрида Макфадден","Служанка"],
+      [29,"Брене Браун","Дары несовершенства"],
+      [30,"Мадлен Миллер","Цирцея"],
+      [31,"Джордж Оруэлл","1984"],
+      [32,"Тейлор Дженкинс Рид","Дейзи Джонс & The Six"],
+      [33,"Мэттью Макконахи","Зелёный свет"],
+      [34,"Брюс Спрингстин","Born to Run"],
+      [35,"Сара Дж. Маас","Стеклянный трон"],
+      [36,"Сара Дж. Маас","Двор шипов и роз"],
+      [37,"Алекс Михаэлидес","Безмолвный пациент"],
+      [38,"В. Э. Шваб","Незримая жизнь Адди Ларю"],
+      [39,"Даниэль Канеман","Думай медленно… решай быстро"],
+      [40,"Кэл Ньюпорт","В работу с головой"],
+      [41,"Маргарет Этвуд","Рассказ служанки"],
+      [42,"Питер Тиль","От нуля к единице"],
+      [43,"Брит Беннетт","Исчезающая половина"],
+      [44,"Али Хейзелвуд","Гипотеза любви"],
+      [45,"Роберт Кийосаки","Богатый папа, бедный папа"],
+      [46,"Саймон Синек","Начни с почему"],
+      [47,"Колин Гувер","Всё закончится на нас"],
+      [48,"Кейси Маккуистон","Красный, белый и королевский синий"],
+      [49,"Мэтт Хейг","Полночная библиотека"],
+      [50,"Гленнон Дойл","Неукротимая"],
+      [51,"Марк Мэнсон","Тонкое искусство пофигизма"],
+      [52,"Колин Гувер","Всё начинается с нас"],
+      [53,"Эмили Генри","Люди, которых мы встречаем в отпуске"],
+      [54,"Принц Гарри","Запасной"],
+      [55,"Кадзуо Исигуро","Клара и Солнце"],
+      [56,"Рут Уэйр","Женщина в каюте 10"],
+      [57,"Лю Цысинь","Задача трёх тел"],
+      [58,"Эрнест Клайн","Первому игроку приготовиться"],
+      [59,"Блейк Крауч","Тёмная материя"],
+      [60,"Фредрик Бакман","Вторая жизнь Уве"],
+      [61,"Энтони Дорр","Весь невидимый нам свет"],
+      [62,"Хизер Моррис","Татуировщик из Освенцима"],
+      [63,"Кейт Куинн","Сеть Алисы"],
+      [64,"Марк Салливан","Под алым небом"],
+      [65,"Фредрик Бакман","Тревожные люди"],
+      [66,"Бонни Гармус","Уроки химии"],
+      [67,"Габриэль Зевин","Завтра, завтра, завтра"],
+      [68,"Селеста Инг","И повсюду тлеют пожары"],
+      [69,"Энн Пэтчетт","Голландский дом"],
+      [70,"Лиана Мориарти","Большая маленькая ложь"],
+      [71,"Лиза Джуэлл","И тогда она исчезла"],
+      [72,"Люси Фоли","Список гостей"],
+      [73,"А. Дж. Финн","Женщина в окне"],
+      [74,"Пола Хокинс","Девушка в поезде"],
+      [75,"Шари Лапена","Супружеская пара по соседству"],
+      [76,"Райли Сейгер","Последние девушки"],
+      [77,"Эмили Генри","Пляжное чтение"],
+      [78,"Колин Гувер","Без надежды"],
+      [79,"Салли Руни","Нормальные люди"],
+      [80,"Марта Холл Келли","Сиреневые девушки"],
+      [81,"Пэм Дженофф","Потерянные девушки Парижа"],
+      [82,"Джордан Питерсон","12 правил жизни"],
+      [83,"Кэрол Дуэк","Гибкое сознание"],
+      [84,"Адам Грант","Подумайте ещё раз"],
+      [85,"Джен Синсеро","НИ СЫ"],
+      [86,"Стивен Кови","7 навыков высокоэффективных людей"],
+      [87,"Грег МакКеон","Эссенциализм"],
+      [88,"Рэй Далио","Принципы"],
+      [89,"Эрик Рис","Бизнес с нуля"],
+      [90,"Юваль Ной Харари","Homo Deus"],
+      [91,"Мэтью Уокер","Зачем мы спим"],
+      [92,"Джеймс Нестор","Дыхание"],
+      [93,"Стивен Хокинг","Краткие ответы на большие вопросы"],
+      [94,"Билл Брайсон","Тело. Путеводитель для владельца"],
+      [95,"Нил Деграсс Тайсон","Астрофизика с космической скоростью"],
+      [96,"Карло Ровелли","Семь этюдов по физике"],
+      [97,"Дэвид Синклер","Продолжительность жизни"],
+      [98,"Дэйв Грол","Рассказчик"],
+      [99,"Мадлен Л’Энгл","Излом времени"],
+      [100,"Дэвид Гоггинс","Не навреди себе / Can’t Hurt Me"]
+    ].map(([id,author,title]) => ({id,author,title}));
+
+    const STORAGE_KEY = "assel-book-roulette-v2";
+    const setupProfile = new URLSearchParams(location.search).get("profile");
+    const hadSavedState = Boolean(localStorage.getItem(STORAGE_KEY));
+    const initialState = setupProfile === "assel" ? { read:[2], current:72 } : { read:[], current:null };
+    let state = loadState();
+    if (setupProfile) history.replaceState({}, "", location.pathname + location.hash);
+    let filter = "all";
+    let query = "";
+    let wheelRotation = 0;
+
+    const els = {
+      list: document.querySelector("#bookList"), wheel: document.querySelector("#wheel"), spin: document.querySelector("#spinButton"),
+      number: document.querySelector("#resultNumber"), title: document.querySelector("#resultTitle"), author: document.querySelector("#resultAuthor"),
+      nextTitle: document.querySelector("#nextTitle"), nextAuthor: document.querySelector("#nextAuthor"), label: document.querySelector("#resultLabel"),
+      readCount: document.querySelector("#readCount"), topRead: document.querySelector("#topRead"), topLeft: document.querySelector("#topLeft"),
+      fill: document.querySelector("#progressFill"), bar: document.querySelector("[role=progressbar]"), percent: document.querySelector("#percentText"), left: document.querySelector("#leftText"),
+      search: document.querySelector("#searchInput")
+    };
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && Array.isArray(saved.read)) {
+          const cleanRead = saved.read.filter(Number.isInteger);
+          if (setupProfile === "assel" && cleanRead.length === 0) return {read:[2], current:72};
+          return {read:cleanRead, current:Number.isInteger(saved.current) ? saved.current : null};
+        }
+      } catch (_) {}
+      return structuredClone(initialState);
+    }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function currentBook() { return books.find(book => book.id === state.current) || null; }
+    function randomIndex(max) {
+      if (max <= 1) return 0;
+      if (crypto && crypto.getRandomValues) {
+        const range = 0x100000000;
+        const limit = range - (range % max);
+        const value = new Uint32Array(1);
+        do { crypto.getRandomValues(value); } while (value[0] >= limit);
+        return value[0] % max;
+      }
+      return Math.floor(Math.random() * max);
+    }
+    function pluralBooks(n) {
+      const mod10=n%10, mod100=n%100;
+      if (mod10===1 && mod100!==11) return "книга";
+      if (mod10>=2 && mod10<=4 && !(mod100>=12 && mod100<=14)) return "книги";
+      return "книг";
+    }
+    function updateProgress() {
+      const count = new Set(state.read).size;
+      const left = books.length - count;
+      const pct = Math.round(count / books.length * 100);
+      els.readCount.textContent = count;
+      els.topRead.textContent = count;
+      els.topLeft.textContent = left;
+      els.fill.style.width = pct + "%";
+      els.bar.setAttribute("aria-valuenow", pct);
+      els.percent.textContent = pct + "% пути";
+      els.left.textContent = `${left} ${pluralBooks(left)} осталось`;
+    }
+    function updateResult(book, label) {
+      if (!book) {
+        const complete = new Set(state.read).size === books.length;
+        els.label.textContent = complete ? "Все книги прочитаны" : "Рулетка готова";
+        els.number.textContent = complete ? "✓" : "?";
+        els.title.textContent = complete ? "Невероятно — список завершён!" : "Крутите колесо";
+        els.author.textContent = complete ? "Пора составлять следующие 100" : "Следующая книга появится здесь";
+        els.nextTitle.textContent = complete ? "Все 100 прочитаны" : "Пока не выбрана";
+        els.nextAuthor.textContent = complete ? "Так держать" : "Крутите рулетку";
+        els.spin.textContent = complete ? "Список завершён" : "Крутить рулетку";
+        els.spin.disabled = complete;
+        return;
+      }
+      els.label.textContent = label || "Ваша следующая книга";
+      els.number.textContent = book.id;
+      els.title.textContent = book.title;
+      els.author.textContent = book.author;
+      els.nextTitle.textContent = book.title;
+      els.nextAuthor.textContent = `${book.author} · №${book.id}`;
+      els.spin.disabled = false;
+    }
+    function renderList() {
+      const read = new Set(state.read);
+      const normalized = query.trim().toLocaleLowerCase("ru");
+      const visible = books.filter(book => {
+        const matchesQuery = !normalized || `${book.title} ${book.author}`.toLocaleLowerCase("ru").includes(normalized);
+        const matchesFilter = filter === "all" || (filter === "read" ? read.has(book.id) : !read.has(book.id));
+        return matchesQuery && matchesFilter;
+      });
+      if (!visible.length) {
+        els.list.innerHTML = `<li class="empty">Ничего не найдено. Попробуйте другой запрос.</li>`;
+        return;
+      }
+      els.list.innerHTML = visible.map(book => `
+        <li class="book-item${read.has(book.id)?" is-read":""}${book.id===state.current?" is-current":""}">
+          <span class="book-no">${String(book.id).padStart(2,"0")}</span>
+          <span class="book-name"><strong>${escapeHTML(book.title)}</strong><span>${escapeHTML(book.author)}</span></span>
+          <input class="book-check" type="checkbox" data-id="${book.id}" ${read.has(book.id)?"checked":""} aria-label="${read.has(book.id)?"Убрать отметку":"Отметить как прочитанную"}: ${escapeHTML(book.title)}">
+        </li>`).join("");
+    }
+    function escapeHTML(value) {
+      return value.replace(/[&<>\"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[char]));
+    }
+    function renderAll(label) {
+      updateProgress();
+      updateResult(currentBook(), label);
+      renderList();
+    }
+    function spin() {
+      const read = new Set(state.read);
+      let pool = books.filter(book => !read.has(book.id));
+      if (!pool.length) return updateResult(null);
+      if (pool.length > 1) pool = pool.filter(book => book.id !== state.current);
+      const winner = pool[randomIndex(pool.length)];
+      els.spin.disabled = true;
+      els.spin.textContent = "Выбираю…";
+      els.label.textContent = "Колесо крутится";
+      wheelRotation += 1440 + ((360 - (winner.id * 137.508) % 360) + randomIndex(180));
+      els.wheel.style.transform = `rotate(${wheelRotation}deg)`;
+      window.setTimeout(() => {
+        state.current = winner.id;
+        saveState();
+        updateResult(winner, "Ваша следующая книга");
+        renderList();
+        els.spin.textContent = "Крутить ещё раз";
+      }, 2150);
+    }
+
+    function registerWebMCP() {
+      const context = document.modelContext;
+      if (!context?.registerTool) return;
+      const register = tool => Promise.resolve(context.registerTool(tool)).catch(error => console.warn("WebMCP:", error));
+      register({
+        name:"get_reading_progress",
+        title:"Показать книжный прогресс",
+        description:"Возвращает число прочитанных и непрочитанных книг, а также текущую следующую книгу.",
+        inputSchema:{type:"object",properties:{},additionalProperties:false},
+        annotations:{readOnlyHint:true,untrustedContentHint:false},
+        execute(){
+          const book=currentBook();
+          return {readCount:new Set(state.read).size,unreadCount:books.length-new Set(state.read).size,nextBook:book?{id:book.id,author:book.author,title:book.title}:null};
+        }
+      });
+      register({
+        name:"spin_book_roulette",
+        title:"Крутить книжную рулетку",
+        description:"Случайно выбирает следующую книгу только среди непрочитанных и обновляет видимый результат.",
+        inputSchema:{type:"object",properties:{},additionalProperties:false},
+        annotations:{readOnlyHint:false,untrustedContentHint:false},
+        execute(){
+          const read=new Set(state.read);
+          let pool=books.filter(book=>!read.has(book.id));
+          if(!pool.length) throw new Error("Все книги уже прочитаны");
+          if(pool.length>1) pool=pool.filter(book=>book.id!==state.current);
+          const winner=pool[randomIndex(pool.length)];
+          state.current=winner.id;
+          saveState();
+          updateResult(winner,"Ваша следующая книга");
+          renderList();
+          return {id:winner.id,author:winner.author,title:winner.title};
+        }
+      });
+      register({
+        name:"set_book_read_status",
+        title:"Изменить статус книги",
+        description:"Отмечает книгу из списка прочитанной или непрочитанной и обновляет прогресс.",
+        inputSchema:{type:"object",properties:{id:{type:"integer",minimum:1,maximum:100},read:{type:"boolean"}},required:["id","read"],additionalProperties:false},
+        annotations:{readOnlyHint:false,untrustedContentHint:false},
+        execute(input){
+          if(!input || !Number.isInteger(input.id) || input.id<1 || input.id>100 || typeof input.read!=="boolean") throw new Error("Нужны id от 1 до 100 и логическое значение read");
+          const read=new Set(state.read);
+          input.read ? read.add(input.id) : read.delete(input.id);
+          state.read=[...read].sort((a,b)=>a-b);
+          saveState();
+          updateProgress();
+          renderList();
+          const book=books[input.id-1];
+          return {id:book.id,author:book.author,title:book.title,read:input.read,readCount:state.read.length};
+        }
+      });
+    }
+
+    els.spin.addEventListener("click", spin);
+    els.search.addEventListener("input", event => { query = event.target.value; renderList(); });
+    document.querySelectorAll(".filter-btn").forEach(button => button.addEventListener("click", () => {
+      filter = button.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+      renderList();
+    }));
+    els.list.addEventListener("change", event => {
+      const checkbox = event.target.closest(".book-check");
+      if (!checkbox) return;
+      const id = Number(checkbox.dataset.id);
+      const read = new Set(state.read);
+      checkbox.checked ? read.add(id) : read.delete(id);
+      state.read = [...read].sort((a,b)=>a-b);
+      saveState();
+      updateProgress();
+      renderList();
+      if (state.read.length === books.length) updateResult(null);
+    });
+
+    saveState();
+    renderAll(setupProfile === "assel" && !hadSavedState ? "Ваш первый результат" : state.current ? "Ваша следующая книга" : "Рулетка готова");
+    registerWebMCP();
+    if (state.current) {
+      requestAnimationFrame(() => { wheelRotation = 2160 + state.current * 3.6; els.wheel.style.transform = `rotate(${wheelRotation}deg)`; });
+    }
+  </script>
+</body>
+</html>
